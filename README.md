@@ -1,1 +1,1 @@
-# advanims1
+# Advanced Animation Semester 1
