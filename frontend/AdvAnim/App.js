@@ -16,6 +16,7 @@ import {
   StatusBar,
 } from 'react-native';
 
+
 import {
   Header,
   LearnMoreLinks,
@@ -23,6 +24,7 @@ import {
   DebugInstructions,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+
 
 const App = () => {
   return (
@@ -66,6 +68,7 @@ const App = () => {
             </View>
             <LearnMoreLinks />
           </View>
+          
         </ScrollView>
       </SafeAreaView>
     </Fragment>
