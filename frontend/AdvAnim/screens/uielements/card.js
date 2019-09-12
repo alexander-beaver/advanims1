@@ -3,13 +3,17 @@ import {Component} from 'react';
 
 import {
     View,
-    Text
+    Text,
+    TouchableOpacity,
+    Image
 } from 'react-native';
 
 var globalStyles = require('../../assets/styles');
 
-export default class Card extends Component{
-    contructor(props){
+export class Card extends Component{
+    
+    constructor(props){
+        super(props);
         this.state = {
             refreshing: false
         }
@@ -27,8 +31,16 @@ export default class Card extends Component{
     render(){
         return(
         <View style={globalStyles.card}>
-            <Text style={globalStyles.cardHeader}>Card Header</Text>
-            <Text>Lorem ipsum dolor sit amet amet.</Text>
+            <View>
+                <Image style={globalStyles.cardMedia} source={{uri: 'https://images.unsplash.com/photo-1518810765707-4f7d5d811ce0'}} />
+                <View style={globalStyles.cardInterior}>
+                    <Text style={globalStyles.cardHeader}>{this.props.title}</Text>
+                    <Text style={globalStyles.cardText}>{this.props.body}</Text>
+                    <TouchableOpacity style={globalStyles.buttonColoredBKG}><Text style={globalStyles.buttonColoredBKGText}>Forward</Text></TouchableOpacity>
+                </View>
+
+            </View>
+
         </View>
         );
     }
