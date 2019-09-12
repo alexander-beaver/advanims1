@@ -2,9 +2,13 @@ import React from 'react';
 import {Component} from 'react';
 import {
     View,
-    FlatList
+    FlatList,
+    TouchableOpacity,
+    Text
 } from 'react-native';
 import {Card} from '../uielements/card';
+var globalStyles = require('../../assets/styles');
+
 
 
 export class Inbox extends Component{
@@ -43,6 +47,7 @@ export class Inbox extends Component{
         <View nativeID="Page">
             <View nativeID="Content">
                 <View nativeID="messages-wrapper">
+                    <TouchableOpacity style={globalStyles.customButton}><Text style={globalStyles.customButtonText}>Refresh</Text></TouchableOpacity>
                     <FlatList
                     data={this.getData()}
                     renderItem = {({item}) => <Card title={item.origin} body={item.message}></Card>}

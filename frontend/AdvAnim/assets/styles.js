@@ -29,8 +29,8 @@ module.exports = StyleSheet.create({
       borderRadius: 30,
       backgroundColor: "#21313F",
       shadowColor: "#000000",
-      shadowOffset: {width: 0, height: 2},
-      shadowOpacity: 0.35,
+      shadowOffset: {width: 0, height: 5},
+      shadowOpacity: 1,
       shadowRadius: 10,
         marginTop: 15,
         marginBottom: 15,
@@ -38,7 +38,8 @@ module.exports = StyleSheet.create({
         marginRight: 10,
         height: "auto",
         display: "flex",
-        flexDirection: "column"
+        flexDirection: "column",
+        elevation: 2
 
 
 
@@ -67,21 +68,34 @@ module.exports = StyleSheet.create({
     },
 
 
-
-    buttonColoredBKG:{
-        borderColor: "#78FA9F",
+    customButton:{
         borderWidth: 3,
         borderRadius: 30,
-        color: "#FFFFFF",
         textAlign: "center",
         alignContent: "center",
         margin: 20
     },
-    buttonColoredBKGText:{
-        color: "#78FA9F",
+    customButtonText:{
         textAlign: "center",
         fontSize: 24,
         margin: 10
+    },
+    buttonColorBlack:{
+        borderColor: "#000000",
+        color: "#000000",
+    },
+    buttonTextColorBlack:{
+        color: "#000000"
+    },
+    buttonColoredBKG:{
+        borderColor: "#78FA9F",
+
+        color: "#FFFFFF",
+
+    },
+    buttonColoredBKGText:{
+        color: "#78FA9F",
+
     }
 
 });
