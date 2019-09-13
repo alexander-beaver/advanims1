@@ -1,14 +1,24 @@
 {
   "name": "backend",
-  "version": "0.0.0",
+  "version": "0.0.1",
+  "description": "Kill me",
+  "main": "server.js",
   "private": true,
   "scripts": {
     "start": "node ./bin/www"
   },
+  "author": "Guy Wilks, Aidan Sacco, the Beev",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alexander-beaver/advanims1/issues"
+  },
+  "homepage": "https://github.com/alexander-beaver/advanims1#readme",
   "dependencies": {
-    "cookie-parser": "~1.4.4",
+    "cookie-parser": "^1.4.4",
     "debug": "~2.6.9",
-    "express": "~4.16.1",
-    "morgan": "~1.9.1"
+    "express": "^4.16.4",
+    "mongo": "^0.1.0",
+    "mongodb": "^3.3.2",
+    "morgan": "^1.9.1"
   }
 }
