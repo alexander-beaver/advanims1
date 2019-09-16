@@ -8,9 +8,13 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "eslint": "^6.3.0",
     "react": "16.8.6",
     "react-native": "0.60.5",
-    "react-native-viewport-units": "0.0.5"
+    "react-native-gesture-handler": "^1.4.1",
+    "react-native-navigation": "^3.2.0",
+    "react-native-viewport-units": "0.0.5",
+    "react-navigation-stack": "^1.7.3"
   },
   "devDependencies": {
     "@babel/core": "7.5.5",
@@ -20,6 +24,7 @@
     "eslint": "6.3.0",
     "jest": "24.9.0",
     "metro-react-native-babel-preset": "0.54.1",
+    "react-navigation": "^4.0.5",
     "react-test-renderer": "16.8.6"
   },
   "jest": {

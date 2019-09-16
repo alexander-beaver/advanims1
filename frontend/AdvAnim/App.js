@@ -8,6 +8,11 @@
 
 import React, {Fragment} from 'react';
 import {
+  createAppContainer,
+  createStackNavigator,
+  createSwitchNavigator,
+} from 'react-navigation';
+import {
   SafeAreaView,
   StyleSheet,
   ScrollView,
@@ -25,8 +30,9 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
-import {Inbox} from './screens/primary/inbox';
-const App = () => {
+import PrimaryStack from './screens/navigation/primaryStack';
+
+/*const App = () => {
   return (
     <Fragment>
       <StatusBar barStyle="dark-content" />
@@ -41,7 +47,7 @@ const App = () => {
             </View>
           )}
           <View style={styles.body}>
-            <Inbox />
+            <PrimaryStack/>
           </View>
           
         </ScrollView>
@@ -49,8 +55,8 @@ const App = () => {
     </Fragment>
   );
 };
-
-const styles = StyleSheet.create({
+*/
+/*const styles = StyleSheet.create({
   scrollView: {
     backgroundColor: Colors.lighter,
   },
@@ -88,5 +94,16 @@ const styles = StyleSheet.create({
     textAlign: 'right',
   },
 });
+*/
 
-export default App;
+export default createAppContainer(
+    createSwitchNavigator(
+        {
+          Inbox: PrimaryStack,
+
+        },
+        {
+          initialRouteName: 'Inbox',
+        },
+    ),
+);
