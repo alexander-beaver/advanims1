@@ -5,16 +5,86 @@ var md5 = require("md5")
 const MongoClient = require('mongodb').MongoClient;
 const uri = "mongodb://localhost";
 const client = new MongoClient(uri, { useNewUrlParser: false });
+var crypto = require('crypto');
+var multer = require('multer')
+// var gcs = require( 'multer-gcs' );
+// var storage = gcs({
+//     filename    : function( req, file, cb ) {
+        
+//         cb( null, file.fieldname + '-' + Date.now() );
+        
+//     },
+//     bucket      : 'bucket-name', // Required : bucket name to upload
+//     projectId      : 'dummy-project', // Required : Google project ID
+//     keyFilename : '/path/to/keyfile.json', // Required : JSON credentials file for Google Cloud Storage
+//     acl : 'publicread' // Optional : Defaults to private
+// });
+ 
+//todo logout
+var upload = multer({ storage: "uploads/" });
+//WORKS
+router.put("/login/", function(req, response, next) {
+  client.connect(err => {
+    if(err != null){
+      response.send(err.toString())
+    }
+    //let finish = collection.insertOne({nice: 69})
+    client.db("longodb").collection("users").find({username: req.get("username")}).toArray(function(err, result) {
+      if (err) throw err;
+      bcrypt.compare(md5(req.get("password")), result[0]["password"], function(err, result) {
+        if(result===true)console.log("GOOD LOGIN")
+        var sha = crypto.createHash('sha256');
+        sha.update(Math.random().toString());
+        var token = sha.digest('hex')
+        client.db("longodb").collection("users").updateOne({username: req.get("username")}, {$set: {token: token}}).then((responseQ) => {
+          response.send(token);}
+        );
+      });
+    });
+    // perform actions on the collection object
+  });
+})
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
+router.put("/logout/", function(req, response, next) {
+  client.connect(err => {
+    if(err != null){
+      response.send(err.toString())
+    }
+    client.db("longodb").collection("users").find({username: req.get("username")}).toArray(function(err, result) {
+      if(err != null){
+        res.send(err.toString())
+      }  
+      if(result[0]["token"] === req.get("token") &&  result[0]["token"] !== ""){
+        console.log("GOOD TOKEN")
+      }else{
+        res.send("incorrectSessionToken")
+      }
+    })
+    client.db("longodb").collection("users").updateOne({username: req.get("username")}, {$set: {token: ""}}).then((responseQ) => {
+      response.send("loggedOut");
+    });
+  });
+})
+
+//TODO: NEEDS TESTING
+router.get('/posts/:id', function(req, res, next) {
   client.connect(err => {
     if(err != null){
       res.send(err.toString())
     }
-    let collection = client.db("admin").collection("test");
+    console.log("ID: " + req.params.id)
+    client.db("longodb").collection("users").find({username: req.params.id}).toArray(function(err, result) {
+      if(err != null){
+        res.send(err.toString())
+      }  
+      if(result[0]["token"] === req.get("token") &&  result[0]["token"] !== ""){
+        console.log("GOOD TOKEN")
+      }else{
+        res.send("incorrectSessionToken")
+      }
+    })
     //let finish = collection.insertOne({nice: 69})
-    client.db("admin").collection("test").find({}).toArray(function(err, result) {
+    client.db("longodb").collection("posts").find({username: req.params.id}).toArray(function(err, result) {
       if (err) throw err;
       res.send(result);
     });
@@ -22,45 +92,48 @@ router.get('/', function(req, res, next) {
   });
 });
 
-/* GET home page. */
-router.get('/posts/:id', function(req, res, next) {
+
+//TODO NEEDS TESTING
+router.get('/posts/', function(req, res, next) {
   client.connect(err => {
     if(err != null){
       res.send(err.toString())
     }
-    let collection = client.db("test").collection("devices");
-    collection.insertOne({nice: 69})
+    //let finish = collection.insertOne({nice: 69})
+    client.db("longodb").collection("posts").find({currentUser: req.get("id")}).toArray(function(err, result) {
+      if (err) throw err;
+      res.send(result);
+    });
     // perform actions on the collection object
-    client.close();
   });
 });
 
-/* GET home page. */
+//WORKS
 router.get('/users/:id', function(req, res) {
+  console.log("PARAMS: " + req.params.id)
   client.connect(err => {
-    console.log(req.query.id)
     if(err != null){
       res.send(err.toString())
     }
-    let collection = client.db("longodb").collection("users").find({username: req.query.id}).toArray(function(err, result){
+    client.db("longodb").collection("users").find({username: req.params.id}).toArray(function(err, result) {
+      if(err != null){
+        res.send(err.toString())
+      }  
+      if(result[0]["token"] === req.get("token") &&  result[0]["token"] !== ""){
+        console.log("GOOD TOKEN")
+      }else{
+        res.send("incorrectSessionToken")
+      }
+    })
+    let collection = client.db("longodb").collection("users").find({username: req.params.id}).toArray(function(err, result){
       if(err !== null){
         console.log(err)
       }
-      console.log(result)
-      bcrypt.compare(md5(req.get("password")), result[0].password, function(err, res) {
-        if(err !== null){
-          console.log(err)
-        }
-        if(res === true){
-          res.send(result)
-        }else{
-          res.send("NOT THE RIGHT USER")
-        }
-      });
+      res.send([{username: result[0]["username"], name: result[0]["name"]}])
     });
   });
 });
-
+//WORKS
 router.post('/users/', function(req, res, next) {
   client.connect(err => {
     if(err != null){
@@ -91,42 +164,85 @@ router.post('/users/', function(req, res, next) {
     }
   });
 });
-
-router.post('/posts', function(req, res, next) {
+//TODO NEEDS TESTING
+router.post('/posts', upload.single('post'), function(req, res, next) {
   client.connect(err => {
     if(err != null){
       res.send(err.toString())
     }
-    let collection = client.db("test").collection("devices");
-    collection.insertOne({nice: 69})
-    // perform actions on the collection object
+    console.log("ID: " + req.params.id)
+    client.db("longodb").collection("users").find({username: req.params.id}).toArray(function(err, result) {
+      if(err != null){
+        res.send(err.toString())
+      }  
+      if(result[0]["token"] === req.get("token") &&  result[0]["token"] !== ""){
+        console.log("GOOD TOKEN")
+      }else{
+        res.send("incorrectSessionToken")
+      }
+    })
+    client.db("longodb").collection("posts").insertOne(
+      ({id: generate(),
+        filelocation: req.file.filename,
+        currentUser: req.get("username"),
+        lastUser: null, numberOfForwards: 0})).then((ref) => {console.log(ref)});
     client.close();
   });
 });
-
-router.post('/posts/:id/send', function(req, res, next) {
+//TODO NEEDS TESTING
+router.put('/posts/:id/send', function(req, res, next) {
   client.connect(err => {
     if(err != null){
       res.send(err.toString())
     }
-    let collection = client.db("test").collection("devices");
-    collection.insertOne({nice: 69})
-    // perform actions on the collection object
+    client.db("longodb").collection("users").find({username: req.params.id}).toArray(function(err, result) {
+      if(err != null){
+        res.send(err.toString())
+      }  
+      if(result[0]["token"] === req.get("token") &&  result[0]["token"] !== ""){
+        console.log("GOOD TOKEN")
+      }else{
+        res.send("incorrectSessionToken")
+      }
+    })
+    client.db("longodb").collection("users").find({id: req.get("newUser")}).then((users) => {
+        if (result.toString() === "") {
+          res.send("This user does not exist")
+        }else{
+          client.db("longodb").collection("posts").find({id: req.get("id")}).then((responseQ) => {
+            var sentFrom = responseQ[0]["currentUser"]
+            client.db("longodb").collection("users").updateOne({id: req.get("id")}, {$set: {token: token}}).then((resp) => {
+              res.send("SENT");}
+            );  
+          });      
+        } 
     client.close();
   });
-});
-
-/* GET home page. */
-router.post('/posts/:id/like', function(req, res, next) {
+})});
+//works
+router.get('/users', function(req, res, next) {
   client.connect(err => {
-    if(err != null){
-      res.send(err.toString())
-    }
-    let collection = client.db("test").collection("devices");
-    collection.insertOne({nice: 69})
-    // perform actions on the collection object
-    client.close();
-  });
+    client.db("longodb").collection("users").find().toArray((err, users) => {
+      // var usernames = []
+      // for(var i = 0; i < users.length; i ++){
+      //   usernames.push(users[i]["username"])
+      // }
+      res.send(users)
+    })
+  })
 });
 
 module.exports = router;
+function generate(count, k) {
+  var _sym = 'abcdefghijklmnopqrstuvwxyz1234567890';
+  var str = '';
+
+  for(var i = 0; i < count; i++) {
+      str += _sym[parseInt(Math.random() * (_sym.length))];
+  }
+  base.getID(str, function(err, res) {
+      if(!res.length) {
+        k(str)                   // use the continuation
+      } else generate(count, k)  // otherwise, recurse on generate
+  });
+}
