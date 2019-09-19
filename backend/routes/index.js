@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 var router = express.Router();
 var md5 = require("md5")
 const MongoClient = require('mongodb').MongoClient;
-const uri = "mongodb://localhost";
+const uri = "mongodb://mongo";
 const client = new MongoClient(uri, { useNewUrlParser: false });
 var crypto = require('crypto');
 var multer = require('multer')
@@ -23,7 +23,7 @@ var multer = require('multer')
 //todo logout
 var upload = multer({ storage: "uploads/" });
 //WORKS
-router.put("/login/", function(req, response, next) {
+router.put("/login", function(req, response, next) {
   client.connect(err => {
     if(err != null){
       response.send(err.toString())
@@ -48,22 +48,24 @@ router.put("/login/", function(req, response, next) {
 router.put("/logout/", function(req, response, next) {
   client.connect(err => {
     if(err != null){
-      response.send(err.toString())
-    }
+      res.send("ERROR")
+      client.close();
+    }else{
     client.db("longodb").collection("users").find({username: req.get("username")}).toArray(function(err, result) {
-      if(err != null){
+      if(err != null || result.toString() === ""){
         res.send(err.toString())
-      }  
+      }else{
       if(result[0]["token"] === req.get("token") &&  result[0]["token"] !== ""){
         console.log("GOOD TOKEN")
+        client.db("longodb").collection("users").updateOne({username: req.get("username")}, {$set: {token: ""}}).then((responseQ) => {
+          response.send("loggedOut");
+        });
       }else{
         res.send("incorrectSessionToken")
-      }
+      }}
     })
-    client.db("longodb").collection("users").updateOne({username: req.get("username")}, {$set: {token: ""}}).then((responseQ) => {
-      response.send("loggedOut");
-    });
-  });
+  }
+  })
 })
 
 //TODO: NEEDS TESTING
@@ -74,22 +76,25 @@ router.get('/posts/:id', function(req, res, next) {
     }
     console.log("ID: " + req.params.id)
     client.db("longodb").collection("users").find({username: req.params.id}).toArray(function(err, result) {
-      if(err != null){
-        res.send(err.toString())
-      }  
+      if(err != null || result.toString() === ""){
+        res.send("ERROR")
+        client.close();
+      }else{
       if(result[0]["token"] === req.get("token") &&  result[0]["token"] !== ""){
         console.log("GOOD TOKEN")
+        client.db("longodb").collection("posts").find({username: req.params.id}).toArray(function(err, result) {
+          if (err) throw err;
+          res.send(result);
+        });
       }else{
         res.send("incorrectSessionToken")
       }
+    }
     })
     //let finish = collection.insertOne({nice: 69})
-    client.db("longodb").collection("posts").find({username: req.params.id}).toArray(function(err, result) {
-      if (err) throw err;
-      res.send(result);
-    });
+    
     // perform actions on the collection object
-  });
+  })
 });
 
 
@@ -100,12 +105,23 @@ router.get('/posts/', function(req, res, next) {
       res.send(err.toString())
     }
     //let finish = collection.insertOne({nice: 69})
-    client.db("longodb").collection("posts").find({currentUser: req.get("id")}).toArray(function(err, result) {
-      if (err) throw err;
-      res.send(result);
-    });
+    client.db("longodb").collection("users").find({username: req.params.id}).toArray(function(err, result) {
+      if(err != null || result.toString() === ""){
+        res.send("ERROR")
+        client.close();
+      }else{
+      if(result[0]["token"] === req.get("token") &&  result[0]["token"] !== ""){
+        console.log("GOOD TOKEN")
+        client.db("longodb").collection("posts").find({currentUser: req.get("id")}).toArray(function(err, result) {
+          if (err) throw err;
+          res.send(result);
+        })
+      }else{
+        res.send("incorrectSessionToken")
+      }
+    }});
     // perform actions on the collection object
-  });
+  })
 });
 
 //WORKS
@@ -113,32 +129,37 @@ router.get('/users/:id', function(req, res) {
   console.log("PARAMS: " + req.params.id)
   client.connect(err => {
     if(err != null){
-      res.send(err.toString())
-    }
+      res.send("ERROR")
+      client.close();
+    }else{
     client.db("longodb").collection("users").find({username: req.params.id}).toArray(function(err, result) {
-      if(err != null){
+      if(err != null|| result.toString() === ""){
         res.send(err.toString())
-      }  
+      } else{
       if(result[0]["token"] === req.get("token") &&  result[0]["token"] !== ""){
         console.log("GOOD TOKEN")
+        let collection = client.db("longodb").collection("users").find({username: req.params.id}).toArray(function(err, result){
+          if(err !== null){
+            console.log(err)
+          }
+          res.send([{username: result[0]["username"], name: result[0]["name"]}])
+        });    
       }else{
         res.send("incorrectSessionToken")
       }
+              
+    }
     })
-    let collection = client.db("longodb").collection("users").find({username: req.params.id}).toArray(function(err, result){
-      if(err !== null){
-        console.log(err)
-      }
-      res.send([{username: result[0]["username"], name: result[0]["name"]}])
-    });
+  }
   });
 });
 //WORKS
 router.post('/users/', function(req, res, next) {
   client.connect(err => {
     if(err != null){
-      res.send(err.toString())
-    }
+      res.send("ERROR")
+      client.close();
+    }else{
     try {
       client.db("longodb").collection("users").find({username: req.get("username").toString()}).toArray(function (err, result) {
         if(err !== null){
@@ -161,76 +182,85 @@ router.post('/users/', function(req, res, next) {
       });
     }catch{
       res.send("an error has occured")
-    }
+    }}
   });
 });
 //TODO NEEDS TESTING
 router.post('/posts', upload.single('post'), function(req, res, next) {
   client.connect(err => {
-    if(err != null){
-      res.send(err.toString())
-    }
+    if(err != null || result.toString() === ""){
+      res.send("ERROR")
+      client.close();
+    }else{
     console.log("ID: " + req.params.id)
-    client.db("longodb").collection("users").find({username: req.params.id}).toArray(function(err, result) {
+    client.db("longodb").collection("users").find({username: req.get("username")}).toArray(function(err, result) {
       if(err != null){
         res.send(err.toString())
       }  
       if(result[0]["token"] === req.get("token") &&  result[0]["token"] !== ""){
         console.log("GOOD TOKEN")
+        client.db("longodb").collection("posts").insertOne(
+          ({id: generate(),
+            filelocation: req.file.filename,
+            currentUser: req.get("username"),
+            message: req.get("message"),
+            lastUser: null, numberOfForwards: 0})).then((ref) => {console.log(ref)});
       }else{
         res.send("incorrectSessionToken")
       }
     })
-    client.db("longodb").collection("posts").insertOne(
-      ({id: generate(),
-        filelocation: req.file.filename,
-        currentUser: req.get("username"),
-        lastUser: null, numberOfForwards: 0})).then((ref) => {console.log(ref)});
     client.close();
-  });
+  }});
 });
 //TODO NEEDS TESTING
 router.put('/posts/:id/send', function(req, res, next) {
   client.connect(err => {
-    if(err != null){
-      res.send(err.toString())
-    }
+    if(err != null) throw err
     client.db("longodb").collection("users").find({username: req.params.id}).toArray(function(err, result) {
-      if(err != null){
-        res.send(err.toString())
-      }  
+      if(err != null || result.toString() === ""){
+        res.send("ERROR")
+        client.close();
+      }else{
       if(result[0]["token"] === req.get("token") &&  result[0]["token"] !== ""){
         console.log("GOOD TOKEN")
+        client.db("longodb").collection("users").find({id: req.get("newUser")}).then((users) => {
+          if (result.toString() === "") {
+            res.send("This user does not exist")
+          }else{
+            client.db("longodb").collection("posts").find({id: req.get("id")}).then((responseQ) => {
+              var sentFrom = responseQ[0]["currentUser"]
+              client.db("longodb").collection("users").updateOne({id: req.get("id")}, {$set: {token: token}}).then((resp) => {
+                res.send("SENT");}
+              );  
+            });      
+          } 
+      client.close();
+    });
       }else{
         res.send("incorrectSessionToken")
       }
+    
+    }
     })
-    client.db("longodb").collection("users").find({id: req.get("newUser")}).then((users) => {
-        if (result.toString() === "") {
-          res.send("This user does not exist")
-        }else{
-          client.db("longodb").collection("posts").find({id: req.get("id")}).then((responseQ) => {
-            var sentFrom = responseQ[0]["currentUser"]
-            client.db("longodb").collection("users").updateOne({id: req.get("id")}, {$set: {token: token}}).then((resp) => {
-              res.send("SENT");}
-            );  
-          });      
-        } 
-    client.close();
-  });
-})});
+})
+});
 //works
 router.get('/users', function(req, res, next) {
-  client.connect(err => {
-    client.db("longodb").collection("users").find().toArray((err, users) => {
-      // var usernames = []
-      // for(var i = 0; i < users.length; i ++){
-      //   usernames.push(users[i]["username"])
-      // }
-      res.send(users)
+    client.connect(err => {
+      client.db("longodb").collection("users").find().toArray((err, users) => {
+        if(err != null || users.toString() === ""){
+          res.send("ERROR")
+        }else{
+        var usernames = []
+        for(var i = 0; i < users.length; i ++){
+          usernames.push(users[i]["username"])
+        }
+        res.send(usernames)
+      }
+      })
     })
-  })
-});
+  }
+);
 
 module.exports = router;
 function generate(count, k) {
