@@ -29,13 +29,14 @@ module.exports = StyleSheet.create({
       borderRadius: 30,
       backgroundColor: "#21313F",
       shadowColor: "#000000",
-      shadowOffset: {width: 0, height: 5},
+      shadowOffset: {width: 0, height: 50},
       shadowOpacity: 1,
-      shadowRadius: 10,
+      shadowRadius: 25,
         marginTop: 15,
         marginBottom: 15,
         marginLeft: 10,
         marginRight: 10,
+        paddingBottom: 0,
         height: "auto",
         display: "flex",
         flexDirection: "column",
@@ -46,16 +47,19 @@ module.exports = StyleSheet.create({
     },
     cardInterior:{
         padding: 30,
+        paddingBottom: 5,
         paddingTop: 10,
-
+        flex: 1,
         display: "flex",
         flexDirection: "column"
     },
     cardMedia:{
       borderRadius: 30,
       width: '100%',
-        height: 300,
-      flex: 2
+        height: 400,
+        display: "flex",
+
+      flex: 3
 
     },
     cardSubtitle:{
@@ -73,7 +77,8 @@ module.exports = StyleSheet.create({
         borderRadius: 30,
         textAlign: "center",
         alignContent: "center",
-        margin: 20
+        margin: 20,
+
     },
     customButtonText:{
         textAlign: "center",

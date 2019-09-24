@@ -47,12 +47,13 @@ export class Inbox extends Component{
 
                 <View nativeID="messages-wrapper">
 
-                    <TouchableOpacity style={globalStyles.customButton}><Text style={globalStyles.customButtonText}>Refresh</Text></TouchableOpacity>
                     <FlatList
                     data={this.getData()}
-                    renderItem = {({item}) => <Card title={item.origin} body={item.message}></Card>}
+                    renderItem = {({item}) => <Card title={item.origin} body={item.message} onPress={() =>
+                        this.props.navigation.navigate('Forward', {
+                            id: "12345"
+                        })}></Card>}
                     keyExtractor={item => item.key}
-
 
                     >
                         

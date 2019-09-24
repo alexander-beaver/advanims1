@@ -8,6 +8,8 @@ import {
     Image
 } from 'react-native';
 
+import {Button} from './button';
+
 var globalStyles = require('../../assets/styles');
 
 export class Card extends Component{
@@ -36,7 +38,7 @@ export class Card extends Component{
                 <View style={globalStyles.cardInterior}>
                     <Text style={globalStyles.cardHeader}>{this.props.title}</Text>
                     <Text style={globalStyles.cardText}>{this.props.body}</Text>
-                    <TouchableOpacity style={[globalStyles.customButton,globalStyles.buttonColoredBKG]}><Text style={[globalStyles.customButtonText,globalStyles.buttonColoredBKGText]}>Forward</Text></TouchableOpacity>
+                    <Button title={"forward"} colored={"true"} callback= {this.props.onPress}/>
                 </View>
 
             </View>
