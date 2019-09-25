@@ -44,7 +44,6 @@ export class Forward extends Component{
                     <Text>Message ID: {this.props.navigation.getParam('id',null)}</Text>
 
                         <Input placeholder="Recipient"/>
-                        <Button title="Forward" colored="true" />
 
                     
                   
