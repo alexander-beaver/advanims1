@@ -41,7 +41,7 @@ export class Forward extends Component{
                 />
                 <View nativeID="Content">
                     <View nativeID="forwardWrapper">
-                    <Text>Message ID: {this.props.navigation.getParam('id',null)}</Text>
+                        
 
 
                     

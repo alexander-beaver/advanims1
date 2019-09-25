@@ -49,10 +49,17 @@ export class Inbox extends Component{
 
                     <FlatList
                     data={this.getData()}
-                    renderItem = {({item}) => <Card title={item.origin} body={item.message} onPress={() =>
-                        this.props.navigation.navigate('Forward', {
-                            id: "12345"
-                        })}></Card>}
+                    renderItem = {({item}) => <Card title={item.origin} body={item.message} onPress={()=>{
+                        this.props.navigation.navigate('UserPicker', {'callback':
+                            function(str) {
+                                
+
+                                                                    
+                            }
+                        });
+                    }}
+                        
+                        ></Card>}
                     keyExtractor={item => item.key}
 
                     >

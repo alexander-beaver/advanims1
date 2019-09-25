@@ -104,7 +104,8 @@ export class UserPicker extends Component {
               title={`${item.name.first} ${item.name.last}`}
               subtitle={item.email}
               onPress = {()=>{
-                this.props.callback(item.email);
+                this.props.navigation.getParam('callback')(item.email);
+                this.props.navigation.goBack();
               }
 
               }

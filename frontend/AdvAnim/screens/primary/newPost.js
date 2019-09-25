@@ -39,6 +39,7 @@ export class NewPost extends Component{
     getData() {
 
     }
+    
 
 
     render(){
@@ -55,11 +56,13 @@ export class NewPost extends Component{
                         <Text>Message ID: {this.props.navigation.getParam('id',null)}</Text>
 
                         <Button title={"Choose a user"} colored={"false"} callback= {()=>{
-                            this.props.navigation.navigate('UserPicker', {"callback":
-                                (str)=>{
-                                    console.log(str);
+                            this.props.navigation.navigate('UserPicker', {'callback':
+                                function(str) {
+                                    
+ 
+                                                                        
                                 }
-                            })
+                            });
                         }}/>
 
                     
@@ -71,6 +74,8 @@ export class NewPost extends Component{
             </View>
         );
     }
+
+    
     async checkPermissions(){
         if(!await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.CAMERA)){
             var granted = await PermissionsAndroid.request(
