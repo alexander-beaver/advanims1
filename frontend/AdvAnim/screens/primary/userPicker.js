@@ -103,11 +103,17 @@ export class UserPicker extends Component {
               leftAvatar={{ source: { uri: item.picture.thumbnail } }}
               title={`${item.name.first} ${item.name.last}`}
               subtitle={item.email}
+              onPress = {()=>{
+                this.props.callback(item.email);
+              }
+
+              }
             />
           )}
           keyExtractor={item => item.email}
           ItemSeparatorComponent={this.renderSeparator}
           ListHeaderComponent={this.renderHeader}
+          
         />
       </View>
     );

@@ -10,7 +10,7 @@ const PrimaryStack = createStackNavigator({
     NewPost: {screen: NewPost},
     UserPicker: {screen: UserPicker}
 },{
-    initialRouteName: 'UserPicker',
+    initialRouteName: 'NewPost',
 },);
 
 export default PrimaryStack;

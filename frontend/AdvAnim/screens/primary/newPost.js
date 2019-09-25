@@ -54,7 +54,13 @@ export class NewPost extends Component{
 
                         <Text>Message ID: {this.props.navigation.getParam('id',null)}</Text>
 
-                        <Input placeholder="Recipient"/>
+                        <Button title={"Choose a user"} colored={"false"} callback= {()=>{
+                            this.props.navigation.navigate('UserPicker', {"callback":
+                                (str)=>{
+                                    console.log(str);
+                                }
+                            })
+                        }}/>
 
                     
                   
