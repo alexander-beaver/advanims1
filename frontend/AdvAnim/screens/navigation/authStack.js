@@ -12,4 +12,5 @@ const AuthStack = createBottomTabNavigator({
     SignUp: {screen: SignUp}
 });
 
+
 export default AuthStack;

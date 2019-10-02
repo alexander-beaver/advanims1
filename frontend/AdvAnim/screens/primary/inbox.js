@@ -8,6 +8,8 @@ import {
     RefreshControl,
 } from 'react-native';
 import {Card} from '../uielements/card';
+import FAB from 'react-native-fab';
+
 var globalStyles = require('../../assets/styles');
 
 
@@ -22,7 +24,6 @@ export class Inbox extends Component{
 
     static navigationOptions = {
         title: 'Inbox',
-        header: null
     }
 
 

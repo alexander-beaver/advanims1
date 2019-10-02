@@ -1,16 +1,18 @@
 
 import {createStackNavigator} from 'react-navigation-stack';
-import {Inbox} from '../primary/inbox';
+
 import {Forward} from '../primary/forward';
-import {NewPost} from '../primary/newPost';
 import {UserPicker} from '../primary/userPicker';
+import SubPrimary from './subPrimaryNavBar';
+import { TInput } from '../primary/textInput';
+
 const PrimaryStack = createStackNavigator({
-    Inbox: {screen: Inbox},
+    SubPrimary: SubPrimary,
     Forward: {screen: Forward},
-    NewPost: {screen: NewPost},
-    UserPicker: {screen: UserPicker}
+    UserPicker: {screen: UserPicker},
+    TextInput: {screen: TInput}
 },{
-    initialRouteName: 'NewPost',
+    initialRouteName: 'SubPrimary',
 },);
 
 export default PrimaryStack;

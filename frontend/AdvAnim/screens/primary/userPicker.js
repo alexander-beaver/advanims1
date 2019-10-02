@@ -3,7 +3,9 @@ import { View, Text, FlatList, ActivityIndicator } from 'react-native';
 import { ListItem, SearchBar } from 'react-native-elements';
 
 export class UserPicker extends Component {
-
+  static navigationOptions = {
+    title: 'Pick a User',
+}
   constructor(props) {
       console.log("Running Constructor for userPicker.js");
     super(props);
@@ -13,6 +15,7 @@ export class UserPicker extends Component {
       data: [],
       error: null,
     };
+    
 
     this.arrayholder = [];
   }
