@@ -9,9 +9,11 @@ import {
     RefreshControl,
 
 } from 'react-native';
+
 import {Header, Input} from "react-native-elements";
 import {Icon} from "react-native-elements";
 import {Button} from "../uielements/button";
+import md5 from "md5";
 
 var globalStyles = require('../../assets/styles');
 
@@ -46,7 +48,7 @@ export class SignUp extends Component{
                 <Input
                     placeholder='Password'
                     secureTextEntry={true}
-                    onChangeText={(text) => this.state.pw={text}}
+                    onChangeText={(text) => this.state.pw=md5({text} + "&CG7AVTZ?AM+H*^BESY7Z$ANHSU==FF7KR5H@FFQ5&D=Z$WF$3LPH+9%2PSM5*--N#FBR5K26X*M@KK-W*+%C3$X&AZN%#X+QT=D?BZBVUGJ!7=E7JZ4@EUHBV7L@NJ-AM3-5Z7QB7JLNT^#T2E#Z9Z#H=8SLJLSD^!A-$2VXPEW88TUD!KGYFPW?$JRVNF3SH!LY=JAS%BRQZ+K!A_WK#EXJLPM$GLGBNZEP!B=#NLSHEV-EFEP!NK6E@F_KLZ5")}
                 />
                 <Button title={"Sign Up"} callback={()=>this.processSignUp()} />
 
@@ -57,13 +59,13 @@ export class SignUp extends Component{
     }
 
     processSignUp(){
-        /*
+
         if(this.state.name && this.state.un && this.state.pw){
+            console.info(this.state.pw);
             fetch('http://ec2-3-19-228-116.us-east-2.compute.amazonaws.com/users', {
                 method: 'POST',
                 headers: {
                     Accept: 'application/json',
-                    'Content-Type': 'application/json',
                     'username': this.state.un,
                     'name': this.state.name,
                     'password': this.state.pw
@@ -82,14 +84,15 @@ export class SignUp extends Component{
                     }).then(res => {
 
                       if(res.status == 200){
-                          var token = res;
-                          console.log(token);
+                          var token = res.body;
+
+                          console.info(token);
                       }
                     })
                 }
 
             });
-        }*/
+        }
 
     }
 
