@@ -28,6 +28,16 @@ export class Inbox extends Component{
 
 
     getData() {
+        fetch('http://ec2-3-19-228-116.us-east-2.compute.amazonaws.com/posts', {
+            method: 'GET',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                'username': this.state.un,
+                'token':this.state.token
+            },
+
+        });
         return [
             {key: 0, origin: 'Alex Beaver', message: 'Check out this cool thing', sent: false},
             {key: 1, origin: 'Alex Krantz', message: 'Check out this cool thing', sent: false},

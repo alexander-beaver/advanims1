@@ -57,7 +57,7 @@ export class SignUp extends Component{
     }
 
     processSignUp(){
-        /*
+
         if(this.state.name && this.state.un && this.state.pw){
             fetch('http://ec2-3-19-228-116.us-east-2.compute.amazonaws.com/users', {
                 method: 'POST',
@@ -82,14 +82,21 @@ export class SignUp extends Component{
                     }).then(res => {
 
                       if(res.status == 200){
-                          var token = res;
-                          console.log(token);
+                          res.json().then(data => {
+                              // do something with your data
+                              console.log(data);
+                              if(data.token){
+                                  console.log(data.token);
+                              }
+                          }).catch(error => {
+                              console.error(error);
+                          });
                       }
-                    })
+                    });
                 }
 
             });
-        }*/
+        }
 
     }
 

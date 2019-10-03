@@ -29,4 +29,8 @@ In Android, more so than iOS, build version is very important. I had some permis
 
 iOS is much more difficult to try to build for. You need a MacOS device and signatures. I do not know if RN has anything to help in the signing process since I am only using Android for debugging. I would avoid using iOS as a build target unless absolutely necessary.
 
-> Deploying to Google Play is also much easier than the App Store. I would highly recommend that people not even attempt to do App Store deployment.  
+> Deploying to Google Play is also much easier than the App Store. I would highly recommend that people not even attempt to do App Store deployment. 
+
+## Conclusion
+
+Now your development environment is set up and you can start planning your project 
