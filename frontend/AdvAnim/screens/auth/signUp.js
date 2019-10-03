@@ -84,11 +84,18 @@ export class SignUp extends Component{
                     }).then(res => {
 
                       if(res.status == 200){
-                          var token = res.body;
+                          res.json().then(data => {
+                              // do something with your data
+                              console.log(data);
+                              if(data.token){
+                                  console.log(data.token);
+                              }
+                          }).catch(error => {
+                              console.error(error);
+                          });
 
-                          console.info(token);
                       }
-                    })
+                    });
                 }
 
             });
