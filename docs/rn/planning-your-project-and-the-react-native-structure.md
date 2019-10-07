@@ -29,4 +29,7 @@ After you figure out the pages, you need to design the front end of your app. I 
 
 ## Create your components
 
-Creating your component can be done easily by following the [template in React Native documentation](https://facebook.github.io/react-native/docs/tutorial). 
+Creating your component can be done easily by following the [template in React Native documentation](https://facebook.github.io/react-native/docs/tutorial).
+
+## Adding a Component
+ 

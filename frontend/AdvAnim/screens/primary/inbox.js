@@ -7,6 +7,8 @@ import {
     Text,
     RefreshControl,
 } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
+
 import {Card} from '../uielements/card';
 import FAB from 'react-native-fab';
 
@@ -21,6 +23,8 @@ export class Inbox extends Component{
             refreshing: false
         }
     }
+
+  
 
     static navigationOptions = {
         title: 'Inbox',

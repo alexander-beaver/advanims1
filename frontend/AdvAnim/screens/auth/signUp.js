@@ -1,5 +1,5 @@
 import React from 'react';
-import {Component, Progres} from 'react';
+import {Component} from 'react';
 
 import {
     View,
@@ -14,6 +14,8 @@ import {Header, Input} from "react-native-elements";
 import {Icon} from "react-native-elements";
 import {Button} from "../uielements/button";
 import md5 from "md5";
+import AsyncStorage from '@react-native-community/async-storage';
+
 
 var globalStyles = require('../../assets/styles');
 
@@ -89,6 +91,21 @@ export class SignUp extends Component{
                               console.log(data);
                               if(data.token){
                                   console.log(data.token);
+                                  var storeData = async () => {
+                                      try {
+                                          await AsyncStorage.setItem('@token', data.token);
+                                          console.log("Saved");
+                                          this.props.navigation.navigate("InitialRouter");
+
+
+
+                                      } catch (e) {
+                                          // saving error
+                                          console.error(e);
+                                      }
+
+                                  }
+                                  storeData();
                               }
                           }).catch(error => {
                               console.error(error);
