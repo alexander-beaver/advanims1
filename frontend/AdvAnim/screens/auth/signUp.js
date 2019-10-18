@@ -86,6 +86,11 @@ export class SignUp extends Component{
                     }).then(res => {
 
                       if(res.status == 200){
+                          var saveUN = async () =>{
+                              await AsyncStorage.setItem('@un', this.state.un);
+                          }
+                          saveUN();
+
                           res.json().then(data => {
                               // do something with your data
                               console.log(data);

@@ -32,4 +32,42 @@ After you figure out the pages, you need to design the front end of your app. I 
 Creating your component can be done easily by following the [template in React Native documentation](https://facebook.github.io/react-native/docs/tutorial).
 
 ## Adding a Component
- 
+
+Any component (such as a UI element or page) is created with the same basic template. The template is available [on the gist](https://gist.github.com/alexander-beaver/5af7a8df45b4f01260704635ad2cef12#file-componenttemplate-js) or as seen below
+
+*ComponentTemplate.js*
+```javascript 
+import React from 'react';
+import {Component} from 'react';
+
+import {
+    View,
+    
+} from 'react-native';
+
+var globalStyles = require('../../assets/styles');
+
+export class ComponentTemplate extends Component{
+    constructor(props){
+        super(props);
+        this.state = {
+            
+        }
+
+    }
+    
+    render(){
+        return(
+            <View>
+                
+            </View>
+
+        );
+    }
+
+}
+```
+
+Anything that you want to render goes inside of the `render()` function and can include other components. The syntax for the `render()` function is very similar to HTML.
+
+

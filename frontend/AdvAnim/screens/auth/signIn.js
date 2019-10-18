@@ -4,11 +4,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 
 import {
     View,
-    FlatList,
-    TouchableOpacity,
-    Text,
-    RefreshControl,
-    Alert
+
 
 } from 'react-native';
 
@@ -29,6 +25,7 @@ export class SignIn extends Component{
 
     }
     auth(){
+
         fetch ('http://ec2-3-19-228-116.us-east-2.compute.amazonaws.com/login',{
             method: 'PUT',
             headers: {
@@ -39,6 +36,11 @@ export class SignIn extends Component{
         }).then(res => {
 
             if(res.status == 200){
+                var saveUN = async () =>{
+                    await AsyncStorage.setItem('@un', this.state.un);
+                }
+                saveUN();
+
                 res.json().then(data => {
                     // do something with your data
                     console.log(data);
@@ -49,8 +51,6 @@ export class SignIn extends Component{
                                 await AsyncStorage.setItem('@token', data.token);
                                 console.log("Saved");
                                 this.props.navigation.navigate("InitialRouter");
-
-
 
                             } catch (e) {
                                 // saving error
