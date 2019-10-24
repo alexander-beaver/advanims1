@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   Text,
   RefreshControl,
-  PermissionsAndroid,
+  PermissionsAndroid, AsyncStorage,
 } from 'react-native';
 import {Card} from '../uielements/card';
 import {Header, Input} from 'react-native-elements';
@@ -37,12 +37,34 @@ export class NewPost extends Component {
     header: null,
   };
 
-  getData() {}
-  submit(){
-  if(this.state.media && this.state.dest && this.state.msg){
+  submit = async () =>{
+    if(this.state.media && this.state.dest && this.state.msg){
+      this.state.media = convertBase64ToEncodableFormat(this.state.media);
+
+      const userToken = await AsyncStorage.getItem('@token');
+      const username = await AsyncStorage.
 
 
-  }
+      fetch("http://ec2-3-19-228-116.us-east-2.compute.amazonaws.com/posts", {
+        "method": "POST",
+        "headers": {
+          "token": "",
+          "username": "",
+          "message": `${this.state.msg}`,
+          "content-type": "application/json"
+        },
+        "body": {
+          "content":`${this.state.media}`
+        }
+      })
+          .then(response => {
+            console.log(response);
+          })
+          .catch(err => {
+            console.log(err);
+          });
+
+    }
   }
 
   render() {
@@ -160,7 +182,7 @@ export class NewPost extends Component {
         // const source = { uri: 'data:image/jpeg;base64,' + response.data };
 
         this.setState({
-          imageSource: 'data:image/jpeg;base64,' + response.data,
+          imageSource: 'data:image/jpeg;base64,'+ response.data,
         });
 
 

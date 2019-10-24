@@ -99,6 +99,8 @@ export class SignUp extends Component{
                                   var storeData = async () => {
                                       try {
                                           await AsyncStorage.setItem('@token', data.token);
+                                          await AsyncStorage.setItem('@un', this.state.un);
+
                                           console.log("Saved");
                                           this.props.navigation.navigate("InitialRouter");
 
