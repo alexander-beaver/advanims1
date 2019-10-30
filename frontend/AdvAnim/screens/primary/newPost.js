@@ -12,7 +12,7 @@ import {Card} from '../uielements/card';
 import {Header, Input} from 'react-native-elements';
 import {Button} from '../uielements/button';
 import ImagePicker from 'react-native-image-picker';
-
+import ProcessOperation from '../Processing/ProcessOperation';
 var globalStyles = require('../../assets/styles');
 
 const ipOptions = {
@@ -38,18 +38,20 @@ export class NewPost extends Component {
   };
 
   submit = async () =>{
+    var po = new ProcessOperation();
     if(this.state.media && this.state.dest && this.state.msg){
-      this.state.media = convertBase64ToEncodableFormat(this.state.media);
+      this.state.media = po.convertBase64ToEncodableFormat(this.state.media);
+      console.info(this.state.media);
 
       const userToken = await AsyncStorage.getItem('@token');
-      const username = await AsyncStorage.
+      const username = await AsyncStorage.getItem('@un');
 
 
       fetch("http://ec2-3-19-228-116.us-east-2.compute.amazonaws.com/posts", {
         "method": "POST",
         "headers": {
-          "token": "",
-          "username": "",
+          "token": `${userToken}`,
+          "username": `${username}`,
           "message": `${this.state.msg}`,
           "content-type": "application/json"
         },
@@ -64,6 +66,12 @@ export class NewPost extends Component {
             console.log(err);
           });
 
+    }
+    else{
+      console.log("NOT ALL VALUES FILLED");
+      console.log(this.state.media);
+      console.log(this.state.dest);
+      console.log(this.state.msg);
     }
   }
 
@@ -145,19 +153,20 @@ export class NewPost extends Component {
   textInput(){
     this.props.navigation.navigate('TextInput',{
       title: "Enter your message",
-      callback: function(msg){
+      callback: msg => {
         console.log("MESSAGE");
         console.log(msg);
-
+        this.state.msg = msg;
 
       }
     });
   }
   userPicker(){
     this.props.navigation.navigate('UserPicker', {
-      callback: function(usr) {
+      callback: usr => {
         //Do Stuff here
         console.log(usr);
+        this.state.dest = usr;
       },
     });
   }
@@ -181,14 +190,13 @@ export class NewPost extends Component {
         // You can also display the image using data:
         // const source = { uri: 'data:image/jpeg;base64,' + response.data };
 
-        this.setState({
-          imageSource: 'data:image/jpeg;base64,'+ response.data,
-        });
+        this.state.media =  'data:image/jpeg;base64,'+ response.data;
 
 
-        
-        
-        
+
+
+
+
       }
     });
   }
