@@ -121,7 +121,7 @@ export class UserPicker extends Component {
               }
             />
           )}
-          keyExtractor={item => item.email}
+          keyExtractor={item => item}
           ItemSeparatorComponent={this.renderSeparator}
           ListHeaderComponent={this.renderHeader}
           
