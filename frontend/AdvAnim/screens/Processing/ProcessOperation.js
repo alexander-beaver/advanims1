@@ -24,7 +24,7 @@ class ProcessOperation {
      * @returns {*}
      */
 
-    static convertEncodableFormatToBase64(a) {
+    convertEncodableFormatToBase64(a) {
         const underscoreRegex = /(_)+/g;
         const dashRegex = /(-)+/g;
         a = a.replace(underscoreRegex, "/");

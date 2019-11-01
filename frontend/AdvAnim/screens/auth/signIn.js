@@ -36,10 +36,7 @@ export class SignIn extends Component{
         }).then(res => {
 
             if(res.status == 200){
-                var saveUN = async () =>{
-                    await AsyncStorage.setItem('@un', this.state.un);
-                }
-                saveUN();
+
 
                 res.json().then(data => {
                     // do something with your data
@@ -48,6 +45,8 @@ export class SignIn extends Component{
                         console.log(data.token);
                         var storeData = async () => {
                             try {
+                                await AsyncStorage.setItem('@un', this.state.un);
+
                                 await AsyncStorage.setItem('@token', data.token);
                                 console.log("Saved");
                                 this.props.navigation.navigate("InitialRouter");
@@ -76,7 +75,7 @@ export class SignIn extends Component{
                 />
                 <Input
                     placeholder='Username'
-                    onChangeText={(text) => this.state.un={text}}
+                    onChangeText={(text) => this.state.un=text}
                 />
 
                 <Input

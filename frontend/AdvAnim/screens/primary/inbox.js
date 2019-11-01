@@ -31,27 +31,67 @@ export class Inbox extends Component{
     }
 
 
-    getData() {
-        fetch('http://ec2-3-19-228-116.us-east-2.compute.amazonaws.com/posts', {
-            method: 'GET',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-                'username': this.state.un,
-                'token':this.state.token
-            },
+    async getData(){
+        const userToken = await AsyncStorage.getItem('@token');
+        const un = await AsyncStorage.getItem('@un');
 
-        });
-        return [
-            {key: 0, origin: 'Alex Beaver', message: 'Check out this cool thing', sent: false},
-            {key: 1, origin: 'Alex Krantz', message: 'Check out this cool thing', sent: false},
-            {key: 2, origin: 'Aidan Sacco', message: 'Check out this cool thing', sent: false},
-            {key: 3, origin: 'Guy Wilks', message: 'Check out this cool thing', sent: false},
+        console.info(userToken);
+        console.info(un);
+        fetch("http://ec2-3-19-228-116.us-east-2.compute.amazonaws.com/posts/", {
+            "method": "GET",
+            "headers": {
+                "token": userToken,
+                "username": un
+            }
+        })
+            .then(response => {
+                console.info(response.status);
+                return response.json();
+            }).then(res => {
+                console.info(res);
+                console.info(JSON.stringify(res));
+                if(res.result == null){
+                    return (
+                            {
+                                "_id":"0",
+                                "pic":"",
+                                "currentUser": un,
+                                "message": "You have no messages",
+                                "lastUser": null,
+                                "numberOfForwards":0
+                            }
+
+                    );
+                }
+
+                console.info(res.result);
+                return res.result;
+            })
+            .catch(err => {
+                console.log(err);
+            });
+    }
+
+    generateCard(item){
+        console.info("Generating Card");
 
 
+        if(item.lastUser == null){
+            item.lastUser = "You are the first to see this!"
+        }
+        return(
+            <Card title={item.lastUser} body={item.message} media={item.pic} onPress={()=>{
+                this.props.navigation.navigate('UserPicker', {'callback':
+                        function(str) {
+
+                        }
 
 
-        ];
+                });
+            }}
+
+            ></Card>
+        );
     }
 
     
@@ -64,17 +104,7 @@ export class Inbox extends Component{
 
                     <FlatList
                     data={this.getData()}
-                    renderItem = {({item}) => <Card title={item.origin} body={item.message} onPress={()=>{
-                        this.props.navigation.navigate('UserPicker', {'callback':
-                            function(str) {
-                                
-
-                                                                    
-                            }
-                        });
-                    }}
-                        
-                        ></Card>}
+                    renderItem = {({item}) => this.generateCard(item)}
                     keyExtractor={item => item.key}
 
                     >
