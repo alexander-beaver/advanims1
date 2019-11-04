@@ -5,7 +5,7 @@ import {
     FlatList,
     TouchableOpacity,
     Text,
-    RefreshControl,
+    RefreshControl, ActivityIndicator,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 
@@ -20,7 +20,8 @@ export class Inbox extends Component{
     constructor(props){
         super(props);
         this.state = {
-            refreshing: false
+            loading: true,
+            data: {}
         }
     }
 
@@ -28,6 +29,17 @@ export class Inbox extends Component{
 
     static navigationOptions = {
         title: 'Inbox',
+    }
+    componentDidMount() {
+        console.log("inbox.js mounted");
+
+        this.runDataGet()
+    }
+
+    async runDataGet(){
+        const a = await this.getData();
+        console.log("Setting State");
+
     }
 
 
@@ -64,9 +76,17 @@ export class Inbox extends Component{
                     );
                 }
 
+
                 console.info(res.result);
                 return res.result;
+
+            }).then(res =>{
+            this.setState({
+                loading: false,
+                data: res
+            });
             })
+
             .catch(err => {
                 console.log(err);
             });
@@ -96,23 +116,37 @@ export class Inbox extends Component{
 
     
     render(){
-        return(
-        <View nativeID="Page">
-            <View nativeID="Content">
-
-                <View nativeID="messages-wrapper">
-
-                    <FlatList
-                    data={this.getData()}
-                    renderItem = {({item}) => this.generateCard(item)}
-                    keyExtractor={item => item.key}
-
-                    >
-                        
-                    </FlatList>
+        if (this.state.loading) {
+            return (
+                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                    <ActivityIndicator />
                 </View>
-            </View>
-        </View>
-        );
+            );
+        }
+        else{
+            console.log("RENDERING ALL CARDS");
+            console.log(this.state.loading);
+            console.log(this.state.data);
+            return(
+                <View nativeID="Page">
+                    <View nativeID="Content">
+
+                        <View nativeID="messages-wrapper">
+
+                            <FlatList
+                                data={this.state.data}
+                                renderItem = {({item}) => this.generateCard(item)}
+                                keyExtractor={item => item.key}
+
+                            >
+
+                            </FlatList>
+                        </View>
+                    </View>
+                </View>
+            );
+
+        }
+
     }
 }
