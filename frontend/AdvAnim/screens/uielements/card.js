@@ -35,7 +35,7 @@ export class Card extends Component{
         return(
         <View style={globalStyles.card}>
             <View>
-                <Image style={globalStyles.cardMedia} source={{uri: `data:image/jpeg;base64, ${po.convertEncodableFormatToBase64(this.props.media)}`}} />
+                <Image style={globalStyles.cardMedia} source={{uri: `${po.convertEncodableFormatToBase64(this.props.media)}`}} />
                 <View style={globalStyles.cardInterior}>
                     <Text style={globalStyles.cardHeader}>{this.props.title}</Text>
                     <Text style={globalStyles.cardText}>{this.props.body}</Text>
