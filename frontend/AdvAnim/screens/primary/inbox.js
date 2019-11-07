@@ -108,20 +108,27 @@ export class Inbox extends Component{
         return(
             <Card title={item.lastUser} body={item.message} media={encMed} onPress={()=>{
                 this.props.navigation.navigate('UserPicker', {'callback':
-                        function(str) {
-                            /*
-                            Use this schema:
-                            Json list of posts
-post/:id/send PUT
-Inputs
-Params
-The id of the post
-Headers
-“currentUser”
-“token”
-Id the user being send to -> “newUser”
+                        async function(str) {
+                            var postID = item["_id"];
+                            const userToken = await AsyncStorage.getItem('@token');
+                            const un = await AsyncStorage.getItem('@un');
 
-                             */
+                            fetch("http://ec2-3-19-228-116.us-east-2.compute.amazonaws.com/send", {
+                                "method": "PUT",
+                                "headers": {
+                                    "token": userToken,
+                                    "currentuser": un,
+                                    "newuser": str,
+                                    "id": item["_id"]
+                                }
+                            })
+                                .then(response => {
+                                    console.log(response);
+                                })
+                                .catch(err => {
+                                    console.log(err);
+                                });
+
                         }
 
 
