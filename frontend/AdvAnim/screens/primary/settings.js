@@ -38,7 +38,7 @@ export class Settings extends Component {
       const userToken = await AsyncStorage.getItem('@token');
       return getToken();
     }
-    fetch ('http://ec2-3-19-228-116.us-east-2.compute.amazonaws.com/logout',{
+    fetch ('http://ec2-18-217-231-79.us-east-2.compute.amazonaws.com/logout',{
       method: 'PUT',
       headers: {
         token: getToken()

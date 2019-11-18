@@ -39,15 +39,13 @@ export class NewPost extends Component {
 
   submit = async () =>{
     var po = new ProcessOperation();
-    if(this.state.media && this.state.dest && this.state.msg){
+    if(this.state.media && this.state.msg){
       this.state.media = po.convertBase64ToEncodableFormat(this.state.media);
       console.info(this.state.media);
 
       const userToken = await AsyncStorage.getItem('@token');
       const username = await AsyncStorage.getItem('@un');
-
-
-      fetch("http://ec2-3-19-228-116.us-east-2.compute.amazonaws.com/posts", {
+      console.info({
         "method": "POST",
         "headers": {
           "token": `${userToken}`,
@@ -55,6 +53,19 @@ export class NewPost extends Component {
           "message": `${this.state.msg}`,
           "content-type": "application/json"
         },
+        "body": {
+          "content":`${this.state.media}`
+        }
+      });
+
+      fetch("http://ec2-18-217-231-79.us-east-2.compute.amazonaws.com/posts", {
+        "method": "POST",
+        "headers": {
+          "token": `${userToken}`,
+          "username": `${username}`,
+          "message": `${this.state.msg}`,
+          "content-type": "application/json"
+        },  
         "body": {
           "content":`${this.state.media}`
         }
@@ -91,11 +102,7 @@ export class NewPost extends Component {
                 colored="true"
                 callback={() => this.textInput()}
             />
-            <Button
-                title="Choose Destination"
-                colored="true"
-                callback={() => this.userPicker()}
-            />
+
             <Button
                 title="Submit"
                 colored="true"
@@ -161,15 +168,7 @@ export class NewPost extends Component {
       }
     });
   }
-  userPicker(){
-    this.props.navigation.navigate('UserPicker', {
-      callback: usr => {
-        //Do Stuff here
-        console.log(usr);
-        this.state.dest = usr;
-      },
-    });
-  }
+
   takePhoto() {
     /*this.checkPermissions().then(r =>
 
@@ -189,13 +188,8 @@ export class NewPost extends Component {
 
         // You can also display the image using data:
         // const source = { uri: 'data:image/jpeg;base64,' + response.data };
-
-        this.state.media =  'data:image/jpeg;base64,'+ response.data;
-
-
-
-
-
+        const po = new ProcessOperation();
+        this.state.media = po.convertBase64ToEncodableFormat(response.data);
 
       }
     });

@@ -18,6 +18,7 @@ var globalStyles = require('../../assets/styles');
 
 
 export class Inbox extends Component{
+    refreshing = false;
     constructor(props){
         super(props);
         this.state = {
@@ -45,12 +46,13 @@ export class Inbox extends Component{
 
 
     async getData(){
+        this.setState({loading: true});
         const userToken = await AsyncStorage.getItem('@token');
         const un = await AsyncStorage.getItem('@un');
 
         console.info(userToken);
         console.info(un);
-        fetch("http://ec2-3-19-228-116.us-east-2.compute.amazonaws.com/posts/", {
+        fetch("http://ec2-18-217-231-79.us-east-2.compute.amazonaws.com/posts/", {
             "method": "GET",
             "headers": {
                 "token": userToken,
@@ -93,6 +95,7 @@ export class Inbox extends Component{
             });
     }
 
+
     generateCard(item){
         const po = new ProcessOperation();
         console.info("Generating Card");
@@ -113,7 +116,7 @@ export class Inbox extends Component{
                             const userToken = await AsyncStorage.getItem('@token');
                             const un = await AsyncStorage.getItem('@un');
 
-                            fetch("http://ec2-3-19-228-116.us-east-2.compute.amazonaws.com/send", {
+                            fetch("http://ec2-18-217-231-79.us-east-2.compute.amazonaws.com/send", {
                                 "method": "PUT",
                                 "headers": {
                                     "token": userToken,
@@ -139,7 +142,13 @@ export class Inbox extends Component{
         );
     }
 
-    
+
+
+    async onRefresh(){
+        await this.getData();
+    }
+
+
     render(){
         if (this.state.loading) {
             return (
@@ -162,6 +171,9 @@ export class Inbox extends Component{
                                 data={this.state.data}
                                 renderItem = {({item}) => this.generateCard(item)}
                                 keyExtractor={item => item.key}
+                                refreshControl={
+                                    <RefreshControl refreshing={this.refreshing} onRefresh={this.onRefresh} />
+                                }
 
                             >
 

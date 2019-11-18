@@ -60,11 +60,14 @@ export class SignUp extends Component{
         );
     }
 
+    /**
+     * Handle processing sign up
+     */
     processSignUp(){
 
         if(this.state.name && this.state.un && this.state.pw){
             console.info(this.state.pw);
-            fetch('http://ec2-3-19-228-116.us-east-2.compute.amazonaws.com/users', {
+            fetch('http://ec2-18-217-231-79.us-east-2.compute.amazonaws.com/users', {
                 method: 'POST',
                 headers: {
                     Accept: 'application/json',
@@ -76,7 +79,7 @@ export class SignUp extends Component{
             }).then(r =>{
                 console.log(r);
                 if(r.status == 200){
-                    fetch ('http://ec2-3-19-228-116.us-east-2.compute.amazonaws.com/login',{
+                    fetch ('http://ec2-18-217-231-79.us-east-2.compute.amazonaws.com/login',{
                         method: 'PUT',
                         headers: {
                             Accept: 'application/json',

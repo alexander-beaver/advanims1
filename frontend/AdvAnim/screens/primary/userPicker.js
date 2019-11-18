@@ -30,7 +30,7 @@ export class UserPicker extends Component {
       const userToken = await AsyncStorage.getItem('@token');
 
 
-      fetch("http://ec2-3-19-228-116.us-east-2.compute.amazonaws.com/users", {
+      fetch("http://ec2-18-217-231-79.us-east-2.compute.amazonaws.com/users", {
           "method": "GET",
           "headers": {
               "token": userToken
