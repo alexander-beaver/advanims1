@@ -38,19 +38,19 @@ export class SignUp extends Component{
                 />
                 <Input
                     placeholder='Name'
-                    onChangeText={(text) => this.state.name={text}}
+                    onChangeText={(text) => this.state.name=text}
 
                 />
                 <Input
                     placeholder='Username'
-                    onChangeText={(text) => this.state.un={text}}
+                    onChangeText={(text) => this.state.un=text}
 
                 />
 
                 <Input
                     placeholder='Password'
                     secureTextEntry={true}
-                    onChangeText={(text) => this.state.pw=md5({text} + "&CG7AVTZ?AM+H*^BESY7Z$ANHSU==FF7KR5H@FFQ5&D=Z$WF$3LPH+9%2PSM5*--N#FBR5K26X*M@KK-W*+%C3$X&AZN%#X+QT=D?BZBVUGJ!7=E7JZ4@EUHBV7L@NJ-AM3-5Z7QB7JLNT^#T2E#Z9Z#H=8SLJLSD^!A-$2VXPEW88TUD!KGYFPW?$JRVNF3SH!LY=JAS%BRQZ+K!A_WK#EXJLPM$GLGBNZEP!B=#NLSHEV-EFEP!NK6E@F_KLZ5")}
+                    onChangeText={(text) => this.state.pw=md5(text + "&CG7AVTZ?AM+H*^BESY7Z$ANHSU==FF7KR5H@FFQ5&D=Z$WF$3LPH+9%2PSM5*--N#FBR5K26X*M@KK-W*+%C3$X&AZN%#X+QT=D?BZBVUGJ!7=E7JZ4@EUHBV7L@NJ-AM3-5Z7QB7JLNT^#T2E#Z9Z#H=8SLJLSD^!A-$2VXPEW88TUD!KGYFPW?$JRVNF3SH!LY=JAS%BRQZ+K!A_WK#EXJLPM$GLGBNZEP!B=#NLSHEV-EFEP!NK6E@F_KLZ5")}
                 />
                 <Button title={"Sign Up"} callback={()=>this.processSignUp()} />
 
@@ -64,6 +64,10 @@ export class SignUp extends Component{
      * Handle processing sign up
      */
     processSignUp(){
+        console.info("Processing Sign Up");
+        console.info(this.state.name);
+        console.info(this.state.un);
+        console.info(this.state.pw);
 
         if(this.state.name && this.state.un && this.state.pw){
             console.info(this.state.pw);

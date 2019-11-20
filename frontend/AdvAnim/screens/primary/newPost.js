@@ -51,7 +51,9 @@ export class NewPost extends Component {
           "token": `${userToken}`,
           "username": `${username}`,
           "message": `${this.state.msg}`,
-          "content-type": "application/json"
+          "Content-Type": "application/json",
+          "Accept":"application/json"
+
         },
         "body": {
           "content":`${this.state.media}`
@@ -64,11 +66,12 @@ export class NewPost extends Component {
           "token": `${userToken}`,
           "username": `${username}`,
           "message": `${this.state.msg}`,
-          "content-type": "application/json"
+          "Content-Type": "application/json",
+          "Accept":"application/json"
         },  
-        "body": {
-          "content":`${this.state.media}`
-        }
+        "body": JSON.stringify({
+          "content":this.state.media
+        })
       })
           .then(response => {
             console.log(response);
@@ -170,10 +173,7 @@ export class NewPost extends Component {
   }
 
   takePhoto() {
-    /*this.checkPermissions().then(r =>
 
-
-        );*/
     ImagePicker.showImagePicker(ipOptions, response => {
       console.log('Response = ', response);
 

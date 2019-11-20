@@ -26,6 +26,8 @@ export class SignIn extends Component{
     }
     auth(){
 
+        console.log("AUTH");
+
         fetch ('http://ec2-18-217-231-79.us-east-2.compute.amazonaws.com/login',{
             method: 'PUT',
             headers: {
@@ -66,6 +68,7 @@ export class SignIn extends Component{
             }
         })
     }
+
     render(){
         return(
             <View>
