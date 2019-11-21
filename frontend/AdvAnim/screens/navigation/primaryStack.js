@@ -13,6 +13,7 @@ const PrimaryStack = createStackNavigator({
     TextInput: {screen: TInput}
 },{
     initialRouteName: 'SubPrimary',
+    title: "EggChat"
 },);
 
 export default PrimaryStack;

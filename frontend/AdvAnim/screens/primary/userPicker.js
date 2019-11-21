@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, FlatList, ActivityIndicator } from 'react-native';
+import {View, Text, FlatList, ActivityIndicator, AsyncStorage} from 'react-native';
 import { ListItem, SearchBar } from 'react-native-elements';
 
 export class UserPicker extends Component {
@@ -25,19 +25,25 @@ export class UserPicker extends Component {
     this.makeRemoteRequest();
   }
 
-  makeRemoteRequest = () => {
-    const url = `https://randomuser.me/api/?&results=20`;
+  makeRemoteRequest = async() => {
     this.setState({ loading: true });
+      const userToken = await AsyncStorage.getItem('@token');
 
-    fetch(url)
+
+      fetch("http://ec2-18-217-231-79.us-east-2.compute.amazonaws.com/users", {
+          "method": "GET",
+          "headers": {
+              "token": userToken
+          }
+      })
       .then(res => res.json())
       .then(res => {
         this.setState({
-          data: res.results,
+          data: res.response,
           error: res.error || null,
           loading: false,
         });
-        this.arrayholder = res.results;
+        this.arrayholder = res.response;
         console.log("Data fetched");
       })
       .catch(error => {
@@ -56,6 +62,7 @@ export class UserPicker extends Component {
         }}
       />
     );
+
   };
 
   searchFilterFunction = text => {
@@ -64,7 +71,7 @@ export class UserPicker extends Component {
     });
 
     const newData = this.arrayholder.filter(item => {
-      const itemData = `${item.name.title.toUpperCase()} ${item.name.first.toUpperCase()} ${item.name.last.toUpperCase()}`;
+      const itemData = `${item.toUpperCase()} `;
       const textData = text.toUpperCase();
 
       return itemData.indexOf(textData) > -1;
@@ -103,18 +110,18 @@ export class UserPicker extends Component {
           data={this.state.data}
           renderItem={({ item }) => (
             <ListItem
-              leftAvatar={{ source: { uri: item.picture.thumbnail } }}
-              title={`${item.name.first} ${item.name.last}`}
-              subtitle={item.email}
+              leftAvatar={{ source: { uri: "https://beaver-app-assets.oss-us-west-1.aliyuncs.com/assets/eggchat/ui/Artboard%201.png?x-oss-process=style/thumbnail-tiny" } }}
+              title={`${item}`}
+              subtitle={"EggChat User"}
               onPress = {()=>{
-                this.props.navigation.getParam('callback')(item.email);
+                this.props.navigation.getParam('callback')(item);
                 this.props.navigation.goBack();
               }
 
               }
             />
           )}
-          keyExtractor={item => item.email}
+          keyExtractor={item => item}
           ItemSeparatorComponent={this.renderSeparator}
           ListHeaderComponent={this.renderHeader}
           

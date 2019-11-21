@@ -11,7 +11,7 @@ import {
 import {Button} from './button';
 
 var globalStyles = require('../../assets/styles');
-
+import ProcessOperation from "../Processing/ProcessOperation";
 export class Card extends Component{
     
     constructor(props){
@@ -31,10 +31,11 @@ export class Card extends Component{
 
 
     render(){
+        var po = new ProcessOperation();
         return(
         <View style={globalStyles.card}>
             <View>
-                <Image style={globalStyles.cardMedia} source={{uri: 'https://images.unsplash.com/photo-1518810765707-4f7d5d811ce0'}} />
+                <Image style={globalStyles.cardMedia} source={{uri:this.props.media}} />
                 <View style={globalStyles.cardInterior}>
                     <Text style={globalStyles.cardHeader}>{this.props.title}</Text>
                     <Text style={globalStyles.cardText}>{this.props.body}</Text>
