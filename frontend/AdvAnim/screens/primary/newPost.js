@@ -6,13 +6,13 @@ import {
   TouchableOpacity,
   Text,
   RefreshControl,
-  PermissionsAndroid,
+  PermissionsAndroid, AsyncStorage,
 } from 'react-native';
 import {Card} from '../uielements/card';
 import {Header, Input} from 'react-native-elements';
 import {Button} from '../uielements/button';
 import ImagePicker from 'react-native-image-picker';
-
+import ProcessOperation from '../Processing/ProcessOperation';
 var globalStyles = require('../../assets/styles');
 
 const ipOptions = {
@@ -37,12 +37,56 @@ export class NewPost extends Component {
     header: null,
   };
 
-  getData() {}
-  submit(){
-  if(this.state.media && this.state.dest && this.state.msg){
+  submit = async () =>{
+    var po = new ProcessOperation();
+    if(this.state.media && this.state.msg){
+      this.state.media = po.convertBase64ToEncodableFormat(this.state.media);
+      console.info(this.state.media);
 
+      const userToken = await AsyncStorage.getItem('@token');
+      const username = await AsyncStorage.getItem('@un');
+      console.info({
+        "method": "POST",
+        "headers": {
+          "token": `${userToken}`,
+          "username": `${username}`,
+          "message": `${this.state.msg}`,
+          "Content-Type": "application/json",
+          "Accept":"application/json"
 
-  }
+        },
+        "body": {
+          "content":`${this.state.media}`
+        }
+      });
+
+      fetch("http://ec2-18-217-231-79.us-east-2.compute.amazonaws.com/posts", {
+        "method": "POST",
+        "headers": {
+          "token": `${userToken}`,
+          "username": `${username}`,
+          "message": `${this.state.msg}`,
+          "Content-Type": "application/json",
+          "Accept":"application/json"
+        },  
+        "body": JSON.stringify({
+          "content":this.state.media
+        })
+      })
+          .then(response => {
+            console.log(response);
+          })
+          .catch(err => {
+            console.log(err);
+          });
+
+    }
+    else{
+      console.log("NOT ALL VALUES FILLED");
+      console.log(this.state.media);
+      console.log(this.state.dest);
+      console.log(this.state.msg);
+    }
   }
 
   render() {
@@ -61,11 +105,7 @@ export class NewPost extends Component {
                 colored="true"
                 callback={() => this.textInput()}
             />
-            <Button
-                title="Choose Destination"
-                colored="true"
-                callback={() => this.userPicker()}
-            />
+
             <Button
                 title="Submit"
                 colored="true"
@@ -123,27 +163,17 @@ export class NewPost extends Component {
   textInput(){
     this.props.navigation.navigate('TextInput',{
       title: "Enter your message",
-      callback: function(msg){
+      callback: msg => {
         console.log("MESSAGE");
         console.log(msg);
-
+        this.state.msg = msg;
 
       }
     });
   }
-  userPicker(){
-    this.props.navigation.navigate('UserPicker', {
-      callback: function(usr) {
-        //Do Stuff here
-        console.log(usr);
-      },
-    });
-  }
+
   takePhoto() {
-    /*this.checkPermissions().then(r =>
 
-
-        );*/
     ImagePicker.showImagePicker(ipOptions, response => {
       console.log('Response = ', response);
 
@@ -158,15 +188,9 @@ export class NewPost extends Component {
 
         // You can also display the image using data:
         // const source = { uri: 'data:image/jpeg;base64,' + response.data };
+        const po = new ProcessOperation();
+        this.state.media = po.convertBase64ToEncodableFormat(response.data);
 
-        this.setState({
-          imageSource: 'data:image/jpeg;base64,' + response.data,
-        });
-
-
-        
-        
-        
       }
     });
   }

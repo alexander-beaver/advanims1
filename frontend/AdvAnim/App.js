@@ -15,19 +15,20 @@ import {
 
 import PrimaryStack from './screens/navigation/primaryStack';
 import AuthStack from "./screens/navigation/authStack";
-
+import {InitialRouter} from "./screens/initalRouter";
 
 
 export default createAppContainer(
     createSwitchNavigator(
         {
+            InitialRouter:InitialRouter,
             Auth: AuthStack,
           Inbox: PrimaryStack,
 
 
         },
         {
-          initialRouteName: 'Auth',
+          initialRouteName: 'InitialRouter',
         },
     ),
 );
