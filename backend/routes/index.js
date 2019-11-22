@@ -2,13 +2,12 @@ var express = require('express');
 const bcrypt = require('bcrypt');
 var router = express.Router();
 var md5 = require("md5")
+const mongo = require('mongodb');
 const MongoClient = require('mongodb').MongoClient;
 const uri = "mongodb://mongo";
 const client = new MongoClient(uri, { useNewUrlParser: false });
 var crypto = require('crypto');
-var multer = require('multer')
-//todo logout
-var upload = multer({ storage: "uploads/" });
+var imgur = require('imgur');
 //WORKS
 router.put("/login", function(req, response, next) {
   try{
@@ -24,6 +23,9 @@ router.put("/login", function(req, response, next) {
     //let finish = collection.insertOne({nice: 69})
     client.db("longodb").collection("users").find({username: req.get("username")}).toArray(function(err, result) {
       if (err) throw err;
+      if(result.toString() === ""){
+        response.send({Error: "no use with this username"});
+      }
       bcrypt.compare(md5(req.get("password")), result[0]["password"], function(err, result) {
         if(result===true)console.log("GOOD LOGIN")
         var sha = crypto.createHash('sha256');
@@ -209,45 +211,53 @@ router.post('/users/', function(req, res, next) {
   });
 });
 //TODO NEEDS TESTING
-router.post('/posts', upload.single('post'), function(req, res, next) {
+router.post('/posts', function(req, res, next) {
+  console.log("request")
   try{
     if(req.get("username").toString() === null) res.send({error: "headers not sent"})
     if(req.get("token").toString() === null) res.send({error: "headers not sent"})
     if(req.get("message").toString() === null) res.send({error: "headers not sent"})
-
   }catch{
     res.send({error: "headers not sent"})
   }
   client.connect(err => {
-    if(err != null || result.toString() === ""){
+    if(err != null){
       res.send({error: "ERROR"})
       client.close();
     }else{
-    console.log("ID: " + req.params.id)
     client.db("longodb").collection("users").find({username: req.get("username")}).toArray(function(err, result) {
       if(err != null){
         res.send({error: err.toString()})
       }  
       if(result[0]["token"] === req.get("token") && result[0]["token"] !== undefined && req.get("token") !== undefined){
         console.log("GOOD TOKEN")
+        console.log(req.body)
+        let img = (req.body["content"].toString())
+        console.log('body: ', img);
         client.db("longodb").collection("posts").insertOne(
-          ({id: generate(),
-            filelocation: req.file.filename,
-            currentUser: req.get("username"),
-            message: req.get("message"),
-            lastUser: null, numberOfForwards: 0})).then((ref) => {console.log(ref)});
+            ({
+              pic: img.toString(),
+              currentUser: req.get("username"),
+              message: req.get("message"),
+              lastUser: null, numberOfForwards: 0}))
+            .then((ref) => {
+              console.log(ref);
+              res.send(ref);
+              client.close();
+            }).catch(err =>{
+              throw err
+            });
       }else{
         res.send({error: "incorrectSessionToken"})
       }
     })
-    client.close();
   }});
 });
 //TODO NEEDS TESTING
-router.put('/posts/:id/send', function(req, res, next) {
+router.put('/send/', function(req, res, next) {
   client.connect(err => {
     if(err != null) throw err
-    client.db("longodb").collection("users").find({username: req.params.id}).toArray(function(err, result) {
+    client.db("longodb").collection("users").find({username: req.get("currentUser")}).toArray(function(err, result) {
       if(err != null || result.toString() === ""){
         res.send({error: "ERROR"})
         client.close();
@@ -256,21 +266,30 @@ router.put('/posts/:id/send', function(req, res, next) {
       if(result[0]["token"] === req.get("token") && result[0]["token"] !== undefined && req.get("token") !== undefined){
         console.log("GOOD TOKEN")
         console.log()
-        client.db("longodb").collection("users").find({id: req.get("newUser")}).then((users) => {
+        client.db("longodb").collection("users").find({id: req.get("newUser")}).toArray((users) => {
           if (result.toString() === "") {
             res.status(409).send({error: "This user does not exist"})
           }else{
-            client.db("longodb").collection("posts").find({id: req.get("id")}).then((responseQ) => {
-              var sentFrom = responseQ[0]["currentUser"]
-              client.db("longodb").collection("posts").updateOne({number: req.get("currentUser")}, {$set: {numberOfForwards: responseQ[0]["numberOfForwards"]+1}}).then((resp) => {
+            client.db("longodb").collection("posts").find({_id: new mongo.ObjectID(req.get("id").toString())/*, currentUser: req.get("currentUser")*/}).toArray((err, responseQ) => {
+              console.log("RESPONSE!:" + responseQ[0].toString())
+              if(err != null || responseQ.toString() === ""){
+                res.send({error: "ERROR"})
+                client.close();
+              }
+              client.db("longodb").collection("posts").updateOne({_id: new mongo.ObjectID(req.get("id"))},
+                  {$set: {numberOfForwards: responseQ[0]["numberOfForwards"]+1,
+                                  lastUser: req.get("currentUser"),
+                                  currentUser: req.get("newUser")}}).then((resp) => {      client.close();
+
                 res.send({error: "SENT"});}
-              );  
+              );
+              client.close();
             });      
           } 
-      client.close();
     });
       }else{
         res.send({response: "incorrectSessionToken"})
+        client.close();
       }
     
     }
@@ -297,16 +316,3 @@ router.get('/users', function(req, res, next) {
 );
 
 module.exports = router;
-function generate(count, k) {
-  var _sym = 'abcdefghijklmnopqrstuvwxyz1234567890';
-  var str = '';
-
-  for(var i = 0; i < count; i++) {
-      str += _sym[parseInt(Math.random() * (_sym.length))];
-  }
-  base.getID(str, function(err, res) {
-      if(!res.length) {
-        k(str)                   // use the continuation
-      } else generate(count, k)  // otherwise, recurse on generate
-  });
-}

@@ -1,3 +1,4 @@
+
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
@@ -6,6 +7,11 @@ var cors = require('cors')
 var indexRouter = require('./routes/index');
 
 var app = express();
+const bodyParser = require('body-parser');
+
+// Tell the bodyparser middleware to accept more data
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
 app.use(logger('dev'));
 app.use(express.json());
